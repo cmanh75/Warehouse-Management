@@ -16,5 +16,6 @@ class LoginForm(FlaskForm):
 
 class UploadForm(FlaskForm):
     name = StringField("Name", validators=[DataRequired()])
+    price = StringField("Price", validators=[DataRequired()])
     image = FileField("Image", validators=[DataRequired()])
-    submit = SubmitField("Submit")
+    submit = SubmitField("ADD")

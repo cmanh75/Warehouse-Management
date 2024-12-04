@@ -29,13 +29,21 @@ class User(UserMixin, db.Model):
     name: Mapped[str]= mapped_column(String, nullable=False)
     password: Mapped[str] = mapped_column(String, nullable=False)
 
+class Product(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    price: Mapped[str] = mapped_column(String, nullable=False)
+    img_path: Mapped[str] = mapped_column(String, nullable=False)
+
 with app.app_context():
     db.create_all()
 
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    list = db.session.execute(db.select(Product)).scalars().all()
+    print(list)
+    return render_template('index.html', list=list)
 
 @app.route('/register', methods=["POST", "GET"])
 def register():
@@ -46,7 +54,7 @@ def register():
             name=request.form.get("name"),
             password=request.form.get("password")
         )
-        check_exist = db.session.execute(db.select(User).where(User.email == new_user.email)).scalar
+        check_exist = db.session.execute(db.select(User).where(User.email == new_user.email)).scalar()
         if check_exist:
             return render_template('register.html', form=form, existed=True)
         db.session.add(new_user)
@@ -71,7 +79,15 @@ def add():
     if form.validate_on_submit():
         f = form.image.data
         filename = secure_filename(f.filename)
-        f.save(os.path.join(app._static_folder, 'assets\\img', filename)) 
+        path = os.path.join(app._static_folder, 'assets\\img', filename)
+        new_product = Product(
+            name=form.name.data,
+            price=form.price.data,
+            img_path=path
+        )
+        db.session.add(new_product)
+        db.session.commit()
+        f.save(path) 
         return redirect(url_for('home'))
     return render_template('add.html', form=form)
 
@@ -79,6 +95,10 @@ def add():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+@app.route('/product')
+def product():
+    return render_template('products.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

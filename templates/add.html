@@ -1,4 +1,12 @@
 {% include 'header.html' %}
 {% from "bootstrap5/form.html" import render_form %}
-  {{ render_form(form) }}
+<main class="mb-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        {{render_form(form)}}
+      </div>
+    </div>
+  </div>
+</main>
 {% include 'footer.html' %}
