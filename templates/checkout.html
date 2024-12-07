@@ -1,0 +1,68 @@
+{% include 'header.html' %}
+{% from "bootstrap5/form.html" import render_form %}
+<div class="checkout-grid">
+  <div class="order-summary js-order-summary">
+    {% for each in _list: %}
+    <div class="cart-item-container js-cart-item-container-58b4fc92-e98c-42aa-8c55-b6b79996769a">
+      <div class="cart-item-details-grid">
+        <img class="product-image" src="{{each.product.img_path}}">
+        <div class="cart-item-details">
+          <div class="product-name">
+            {{each.product.name}}
+          </div>
+          <div class="product-price">
+            {{each.product.price}}
+          </div>
+          <div class="product-quantity">
+            <span>
+              Quantity: <span class="quantity-label">{{each.quantity}}</span>
+            </span>
+            <span class="update-quantity-link link-primary">
+              Update
+            </span>
+            <span class="delete-quantity-link link-primary js-delete-quantity-link"
+              data-id="58b4fc92-e98c-42aa-8c55-b6b79996769a">
+              <a href="{{url_for('delete_item', item_id=each.id)}}">Delete</a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="delivery-options">
+    <div class="delivery-options-title">
+      Choose a delivery option:
+    </div>
+    {% if not filled: %}
+    {{render_form(order_form)}}
+    {% endif %}
+    </div>
+  </div>
+  {% if filled: %}
+  <div class="payment-summary js-payment-summary">
+    <div class="payment-summary-title">
+      Order Summary
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Items (5):</div>
+      <div class="payment-summary-money">{{user.total_price}}</div>
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Shipping &amp; handling:</div>
+      <div class="payment-summary-money">{{user.shipping}}</div>
+    </div>
+
+    <div class="payment-summary-row total-row">
+      <div>Order total:</div>
+      <div class="payment-summary-money">{{user.total_price + user.shipping}}</div>
+    </div>
+    <button class="place-order-button button-primary" fdprocessedid="4i3lu9">
+      {{render_form(place_order)}}
+    </button>
+  </div>
+  {% endif %}
+</div>
+{% include 'footer.html' %}

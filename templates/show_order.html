@@ -1,0 +1,55 @@
+{% include 'header.html' %}
+{% from "bootstrap5/form.html" import render_form %}
+<div class="checkout-grid">
+  <div class="order-summary js-order-summary">
+    {% for each in order.selections: %}
+    <div class="cart-item-container js-cart-item-container-58b4fc92-e98c-42aa-8c55-b6b79996769a">
+      <div class="cart-item-details-grid">
+        <img class="product-image" src="{{each.product.img_path}}">
+        <div class="cart-item-details">
+          <div class="product-name">
+            {{each.product.name}}
+          </div>
+          <div class="product-price">
+            {{each.product.price}}
+          </div>
+          <div class="product-quantity">
+            <span>
+              Quantity: <span class="quantity-label">{{each.quantity}}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="payment-summary js-payment-summary">
+    <div class="payment-summary-title">
+      Order Summary
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Items (5):</div>
+      <div class="payment-summary-money">{{order.user.total_price}}</div>
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Shipping &amp; handling:</div>
+      <div class="payment-summary-money">{{order.user.shipping}}</div>
+    </div>
+
+    <div class="payment-summary-row total-row">
+      <div>Order total:</div>
+      <div class="payment-summary-money">{{order.user.total_price + order.user.shipping}}</div>
+    </div>
+    {% if order.confirmed != None: %}
+    <div>
+      <h1>Feedback: </h1>
+      <p> {{order.feedback}} </p>
+    </div>
+    {% else: %}
+    {{render_form(form)}}
+    {% endif %}
+  </div>
+</div>
+{% include 'footer.html' %}

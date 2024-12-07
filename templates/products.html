@@ -1,4 +1,38 @@
 {% include 'header.html' %}
-{% from "bootstrap5/form.html" import render_form %}
-	<img src="static\assets\img\download_1.jpg">
+<div class="px-5 pt-5 my-5 text-center border-bottom">
+  <h1 class="display-4 fw-bold text-body-emphasis"> Item List </h1>
+</div>
+<div class="mb-3">
+  <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="post" action="{{url_for('find')}}">
+    <input type="text" id="name" name="name" class="form-control form-control-dark text-bg-dark" placeholder="Search..."
+      aria-label="Search">
+  </form>
+</div>
+<div class="container">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+    {% for each in list: %}
+    <div class="col">
+      <div class="card shadow-sm">
+        <img class="card-img-top"
+          data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail"
+          alt="Thumbnail [100%x225]" style="height: 350px; width: 100%; display: block;" src="{{each.img_path}}"
+          data-holder-rendered="true">
+        <div class="card-body">
+          <p class="card-text">{{each.name}}</p>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group">
+              <button type="button" class="btn btn-sm btn-outline-secondary"> <a href="{{url_for('add_to_cart', product_id=each.id)}}">Add to cart</a></button>
+              <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{{url_for('edit', product_id=each.id)}}"> Edit </a></button>
+            </div>
+            <small class="text-body-secondary">Number: {{each.number}}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="d-flex justify-content-end mb-4 ">
+    <a class="btn btn-primary float-right" href="{{url_for('add')}}">Create New Product</a>
+  </div>
+</div>
 {% include 'footer.html' %}
