@@ -17,9 +17,6 @@
             <span>
               Quantity: <span class="quantity-label">{{each.quantity}}</span>
             </span>
-            <span class="update-quantity-link link-primary">
-              Update
-            </span>
             <span class="delete-quantity-link link-primary js-delete-quantity-link"
               data-id="58b4fc92-e98c-42aa-8c55-b6b79996769a">
               <a href="{{url_for('delete_item', item_id=each.id)}}">Delete</a>
@@ -55,9 +52,17 @@
       <div class="payment-summary-money">{{user.shipping}}</div>
     </div>
 
+    <div class="payment-summary-row">
+      <div>Address: {{user.address}}</div>
+    </div>
+
+    <div class="payment-summary-row">
+      <div>Delivery Date: {{user.delivery_date}}</div>
+    </div>
+
     <div class="payment-summary-row total-row">
       <div>Order total:</div>
-      <div class="payment-summary-money">{{user.total_price + user.shipping}}</div>
+      <div class="payment-summary-money">{{user.summary}}</div>
     </div>
     <button class="place-order-button button-primary" fdprocessedid="4i3lu9">
       {{render_form(place_order)}}

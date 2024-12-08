@@ -12,9 +12,6 @@
           <p class="mb-0 opacity-75">Order Date: {{each.order_date}}</p>
           <p class="mb-0 opacity-75">Delivery Date: {{each.user.delivery_date}}</p>
         </div>
-        {% if each.confirmed == None: %}
-        <small class="opacity-50 text-nowrap">⌛</small>
-        {% endif %}
         {% if each.confirmed != None and each.confirmed == True: %}
         <small class="opacity-50 text-nowrap">✅</small>
         {% endif %}

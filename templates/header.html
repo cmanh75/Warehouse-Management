@@ -20,8 +20,13 @@
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <li><a href="{{url_for('home')}}" class="nav-link px-2 text-secondary">Home</a></li>
           <li><a href="{{url_for('products')}}" class="nav-link px-2 text-white">Products</a></li>
-          <li><a href="{{url_for('checkout')}}" class="nav-link px-2 text-white">Orders</a></li>
+          {% if current_user.is_authenticated and current_user.id == 1: %}
           <li><a href="{{url_for('manage')}}" class="nav-link px-2 text-white">Manage</a></li>
+          {% endif %}
+          {% if current_user.is_authenticated and current_user.id != 1: %}
+          <li><a href="{{url_for('checkout')}}" class="nav-link px-2 text-white">Orders</a></li>
+          <li><a href="{{url_for('history')}}" class="nav-link px-2 text-white">History</a></li>
+          {% endif %}
         </ul>
 
         <div class="text-end">

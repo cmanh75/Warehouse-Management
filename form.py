@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, FileField, SelectField
+from wtforms import StringField, SubmitField, FileField, SelectField, PasswordField
 from wtforms.validators import DataRequired
 from flask_ckeditor import CKEditorField
 from datetime import datetime as dt, timedelta
@@ -12,7 +12,7 @@ class RegisterForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired()])
-    password = StringField("Password", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Sign In")
 
 class UploadForm(FlaskForm):

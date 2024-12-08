@@ -29,7 +29,7 @@
     </div>
 
     <div class="payment-summary-row">
-      <div>Items (5):</div>
+      <div>Items:</div>
       <div class="payment-summary-money">{{order.user.total_price}}</div>
     </div>
 
@@ -40,7 +40,7 @@
 
     <div class="payment-summary-row total-row">
       <div>Order total:</div>
-      <div class="payment-summary-money">{{order.user.total_price + order.user.shipping}}</div>
+      <div class="payment-summary-money">{{order.user.summary}}</div>
     </div>
     {% if order.confirmed != None: %}
     <div>
@@ -48,7 +48,11 @@
       <p> {{order.feedback}} </p>
     </div>
     {% else: %}
+    {% if current_user.is_authenticated and current_user.id == 1: %}
     {{render_form(form)}}
+    {% else: %}
+    <h3 class="mt-5">Please wait for approval</h3>
+    {% endif %}
     {% endif %}
   </div>
 </div>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash, get_flashed_messages
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
@@ -11,6 +11,7 @@ from flask_login import UserMixin, login_user, LoginManager, current_user, logou
 from werkzeug.utils import secure_filename
 from datetime import datetime as dt, timedelta
 from dotenv import load_dotenv
+import locale
 import os
 load_dotenv()
 
@@ -23,6 +24,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 db = SQLAlchemy(model_class=Base)
 ckeditor = CKEditor(app)
 db.init_app(app)
+locale.setlocale(locale.LC_ALL, '')
 login_manager = LoginManager()
 login_manager.init_app(app)
 @login_manager.user_loader
@@ -37,8 +39,9 @@ class User(UserMixin, db.Model):
     password: Mapped[str] = mapped_column(String, nullable=False)
     selections = relationship("Selection", back_populates="user")
     address: Mapped[Optional[str]] = mapped_column(String)
-    shipping: Mapped[Optional[int]] = mapped_column(Integer)
-    total_price: Mapped[Optional[int]] = mapped_column(Integer)
+    shipping: Mapped[Optional[str]] = mapped_column(String)
+    total_price: Mapped[Optional[str]] = mapped_column(String)
+    summary: Mapped[Optional[str]] = mapped_column(String)
     delivery_date: Mapped[Optional[str]] = mapped_column(String)
 
 class Product(db.Model):
@@ -77,8 +80,12 @@ with app.app_context():
 @app.route('/add_to_cart', methods=["POST", "PATCH", "GET"])
 def add_to_cart():
     product_id = request.args.get("product_id")
+    print(product_id)
     product = db.session.execute(db.select(Product).where(Product.id == product_id)).scalar()
-    check_exist = db.session.execute(db.select(Selection).where(Selection.product_id == product_id and Selection.user_id == current_user.id)).scalar()
+    check_exist = db.session.execute(db.select(Selection).where((Selection.product_id == product_id), (Selection.user_id == current_user.id))).scalar()
+    if request.method == "POST":
+        print(122)
+        print(request.form.get('name'))
     if check_exist:
         check_exist.quantity += 1
         db.session.commit()
@@ -94,12 +101,16 @@ def add_to_cart():
         db.session.commit()
     return redirect(url_for('checkout'))
 
+def currency_format(x):
+    return locale.currency(x, grouping=True)[:-3].strip('$') + "₫"
+
 @app.route('/show_order', methods=["PUT", "PATCH", "GET", "POST"])
+@login_required
 def show_order():
     form = Confirm()
     order_id = request.args.get("order_id")
     order = db.session.execute(db.select(Order).where(Order.id == order_id)).scalar()
-    if form.validate_on_submit():
+    if request.method == "POST":
         order.feedback = form.feedback.data
         order.confirmed = False
         if form.accept.data:
@@ -116,8 +127,16 @@ def manage():
     list = db.session.execute(db.select(Order)).scalars().all()
     return render_template('manage.html', list=list)
 
+@app.route('/history')
+def history():
+    list = db.session.execute(db.select(Order).where(Order.user_id == current_user.id)).scalars().all()
+    return render_template('manage.html', list=list)
+
 @app.route('/checkout', methods=["POST", "GET", "PATCH", "PUT"])
 def checkout():
+    if not current_user.is_authenticated:
+        flash('Please login')
+        return redirect(url_for('login'))
     list = db.session.execute(db.select(Selection).where(Selection.user_id == current_user.id)).scalars().all()
     order_form = CheckoutForm()
     place_order = PlaceOrder()
@@ -126,18 +145,21 @@ def checkout():
         user.address = order_form.address.data
         print(order_form.address.data)
         days = 1
-        shipping = 50
+        shipping = 50000
         if order_form.delivery_options.data == '2':
             days = 3
-            shipping = 30
+            shipping = 30000
         if order_form.delivery_options.data == '3':
             days = 5
-            shipping = 20
+            shipping = 20000
         user.delivery_date = (dt.now() + timedelta(days=days)).strftime("%B %d, %Y")
-        user.shipping = shipping
-        user.total_price = 0
+        total_price = 0
         for each in list:
-            user.total_price += each.product.price * each.quantity
+            total_price += int(locale.atof(each.product.price.strip('₫'))) * each.quantity
+        user.total_price = currency_format(total_price)
+        print(total_price)
+        user.summary = currency_format(total_price + shipping)
+        user.shipping = currency_format(shipping)
         db.session.commit()
         return render_template("checkout.html", _list=list, filled=True, user=user, order_form=order_form, place_order=place_order)
     order_form.address.data = user.address
@@ -147,12 +169,17 @@ def checkout():
             user_id=current_user.id,
             user=current_user,
             order_date=dt.now().strftime("%B %d, %Y"),
-            confirmed=False
         )
         db.session.add(order)
         db.session.commit()
         return render_template('checkout.html', _list=list, filled=False, user=None, order_form=order_form, place_order=place_order)
     return render_template('checkout.html', _list=list, filled=False, user=None, order_form=order_form, place_order=place_order)
+
+@app.route('/delete', methods=["DELETE", "GET"])
+def delete():
+    db.session.delete(db.session.execute(db.select(Product).where(Product.id == request.args.get("product_id"))).scalar())
+    db.session.commit()
+    return redirect(url_for('products'))
 
 @app.route('/delete-item', methods=["GET", "DELETE"])
 def delete_item():
@@ -199,7 +226,7 @@ def edit():
         filename = secure_filename(f.filename)
         path = os.path.join(app._static_folder, 'assets\\img', filename)
         product.name = form.name.data
-        product.price = form.price.data
+        product.price = currency_format(int(form.price.data))
         product.img_path = path
         product.number = form.number.data
         f.save(path)
@@ -216,7 +243,7 @@ def add():
         path = os.path.join(app._static_folder, 'assets\\img', filename)
         new_product = Product(
             name=form.name.data,
-            price=form.price.data,
+            price=currency_format(int(form.price.data)),
             img_path=path,
             number=form.number.data
         )

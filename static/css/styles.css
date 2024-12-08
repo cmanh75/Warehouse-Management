@@ -17,7 +17,9 @@
   right: 0;
   z-index: 1000;
 }
-
+.main{
+  background-color: bisque;
+}
 .header-content {
   width: 100%;
   max-width: 1100px;

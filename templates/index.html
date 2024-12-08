@@ -1,3 +1,49 @@
 {% include 'header.html' %}
+<div class="container py-5">
+  <div class="row align-items-center mb-5">
+    <div class="col-lg-6">
+      <h1 class="display-4 fw-bold">Welcome to Our Store</h1>
+      <p class="lead text-muted">Discover amazing products at great prices. Shop our wide selection of quality items.</p>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+        <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg px-4 me-md-2">Browse Products</a>
+        {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg px-4">Sign Up</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <img src="{{ url_for('static', filename='assets/img/hero-image.jpg') }}" class="img-fluid rounded shadow" alt="Store banner">
+    </div>
+  </div>
 
+  <div class="row g-4 py-5">
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <i class="bi bi-truck fs-1 text-primary mb-3"></i>
+          <h5 class="card-title">Fast Delivery</h5>
+          <p class="card-text">Get your orders delivered quickly and safely to your doorstep.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <i class="bi bi-shield-check fs-1 text-primary mb-3"></i>
+          <h5 class="card-title">Secure Shopping</h5>
+          <p class="card-text">Shop with confidence knowing your transactions are safe and secure.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <i class="bi bi-star fs-1 text-primary mb-3"></i>
+          <h5 class="card-title">Quality Products</h5>
+          <p class="card-text">We offer only the best quality products for our valued customers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% include 'footer.html' %}

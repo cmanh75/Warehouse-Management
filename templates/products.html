@@ -2,11 +2,17 @@
 <div class="px-5 pt-5 my-5 text-center border-bottom">
   <h1 class="display-4 fw-bold text-body-emphasis"> Item List </h1>
 </div>
-<div class="mb-3">
-  <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="post" action="{{url_for('find')}}">
-    <input type="text" id="name" name="name" class="form-control form-control-dark text-bg-dark" placeholder="Search..."
-      aria-label="Search">
-  </form>
+<div class="row mb-5">
+  <div class="col">
+  </div>
+  <div class="col col-5 col">
+    <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="post" action="{{url_for('find')}}">
+      <input type="text" id="name" name="name" class="form-control form-control-dark text-light" placeholder="Search..."
+        aria-label="Search">
+    </form>
+  </div>
+  <div class="col">
+  </div>
 </div>
 <div class="container">
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
@@ -18,21 +24,38 @@
           alt="Thumbnail [100%x225]" style="height: 350px; width: 100%; display: block;" src="{{each.img_path}}"
           data-holder-rendered="true">
         <div class="card-body">
-          <p class="card-text">{{each.name}}</p>
+          <h1 class="card-text">{{each.name}}</h1>
+          <h3>{{each.price}}</h3>
+          <form method="post" action="{{url_for('add_to_cart')}}">
+            <select id="quantity" name="quantity" class="form-select mb-2 w-50" aria-label="Default select example">
+              {% for i in range(1, each.number + 1): %}
+              <option value="{{i}}"> {{i}} </option>
+              {% endfor %}
+            </select>
+          </form>
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
-              <button type="button" class="btn btn-sm btn-outline-secondary"> <a href="{{url_for('add_to_cart', product_id=each.id)}}">Add to cart</a></button>
+              {% if current_user.is_authenticated and current_user.id != 1: %}
+              <form method="post" action="{{url_for('add_to_cart', product_id=each.id)}}">
+                <button type="submit" class="btn btn-sm btn-outline-secondary">Add to cart</button>
+              </form>
+              {% endif %}
+              {% if current_user.is_authenticated and current_user.id == 1: %}
               <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{{url_for('edit', product_id=each.id)}}"> Edit </a></button>
+              <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{{url_for('delete', product_id=each.id)}}"> Delete </a></button>
+              {% endif %}
             </div>
-            <small class="text-body-secondary">Number: {{each.number}}</small>
+            <small class="text-body-secondary">Number in stock: {{each.number}}</small>
           </div>
         </div>
       </div>
     </div>
     {% endfor %}
   </div>
-  <div class="d-flex justify-content-end mb-4 ">
+  {% if current_user.is_authenticated and current_user.id == 1: %}
+  <div class="d-flex justify-content-end mt-5">
     <a class="btn btn-primary float-right" href="{{url_for('add')}}">Create New Product</a>
   </div>
+  {% endif %}
 </div>
 {% include 'footer.html' %}
