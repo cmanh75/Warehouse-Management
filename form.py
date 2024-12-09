@@ -42,3 +42,8 @@ class Confirm(FlaskForm):
 
 class PlaceOrder(FlaskForm):
     submit = SubmitField("Place Your Order")
+
+class ImportForm(FlaskForm):
+    quantity = StringField("Quantity", validators=[DataRequired()])
+    description = CKEditorField("Description")
+    submit = SubmitField("Import")

@@ -4,7 +4,43 @@ body {
   background-color: #f8f9fa;
   color: #212529;
 }
+.text-gradient {
+  background: linear-gradient(45deg, #007bff, #6610f2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
+.feature-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(0,123,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+.bg-gradient-overlay {
+  background: linear-gradient(45deg, rgba(0,123,255,0.1), rgba(102,16,242,0.1));
+}
+
+.btn-hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
 /* Flash messages */
 .flash {
   color: #dc3545;
@@ -14,7 +50,92 @@ body {
   border-radius: 0.25rem;
   background-color: rgba(220, 53, 69, 0.1);
 }
+.hero-section {
+  position: relative;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  overflow: hidden;
+}
 
+.hero-wave {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+}
+
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.product-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.price-tag {
+  color: #0d6efd;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.btn-hover-effect {
+  transition: all 0.3s ease;
+}
+
+.btn-hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.stock-badge {
+  background-color: #f8f9fa;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.search-form .input-group {
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.search-form .form-control {
+  border-radius: 0 25px 25px 0;
+}
+
+.search-form .input-group-text {
+  border-radius: 25px 0 0 25px;
+}
+
+.add-product-btn {
+  border-radius: 50px;
+  padding: 0.75rem 2rem;
+  transition: all 0.3s ease;
+}
+
+.add-product-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+
+.custom-select {
+  border-radius: 0.5rem;
+  border: 2px solid #dee2e6;
+  transition: border-color 0.3s ease;
+}
+
+.custom-select:focus {
+  border-color: #0d6efd;
+  box-shadow: none;
+}
 /* Main content */
 .main {
   min-height: 100vh;

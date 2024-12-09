@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String, Boolean
-from form import RegisterForm, LoginForm, UploadForm, CheckoutForm, PlaceOrder, Confirm
+from form import RegisterForm, LoginForm, UploadForm, CheckoutForm, PlaceOrder, Confirm, ImportForm
 from flask_bootstrap import Bootstrap5
 from typing import List, Optional
 from functools import wraps
@@ -126,7 +126,7 @@ def manage():
     list = db.session.execute(db.select(Order)).scalars().all()
     return render_template('manage.html', list=list)
 
-@app.route('/history')
+@app.route('/history', methods=["POST", "GET"])
 def history():
     list = db.session.execute(db.select(Order).where(Order.user_id == current_user.id)).scalars().all()
     return render_template('manage.html', list=list)
@@ -171,18 +171,36 @@ def checkout():
         )
         db.session.add(order)
         db.session.commit()
-        return render_template('checkout.html', _list=list, filled=False, user=None, order_form=order_form, place_order=place_order)
+        return redirect('history')
     return render_template('checkout.html', _list=list, filled=False, user=None, order_form=order_form, place_order=place_order)
 
-@app.route('/delete', methods=["DELETE", "GET"])
-def delete():
-    db.session.delete(db.session.execute(db.select(Product).where(Product.id == request.args.get("product_id"))).scalar())
+@app.route('/imported', methods=["GET", "POST", "PATCH"])
+def imported():
+    product_id = request.args.get("product_id")
+    product = db.session.execute(db.select(Product).where(Product.id == product_id)).scalar()
+    product.number += int(request.args.get("quantity"))
     db.session.commit()
     return redirect(url_for('products'))
 
+@app.route('/import', methods=["POST", "GET"])
+def import_pd():
+    form = ImportForm()
+    confirmed = False
+    product_id = request.args.get("product_id")
+    product = db.session.execute(db.select(Product).where(Product.id == product_id)).scalar()
+    quantity = 0
+    total = 0
+    description = ""
+    if request.method == "POST":
+        description = form.description.data
+        quantity = int(form.quantity.data)
+        total = int(product.price.strip("₫").replace(",", "")) * int(form.quantity.data)
+        confirmed = True
+    return render_template('import.html', product=product, form=form, confirmed=confirmed, total=currency_format(total), quantity=quantity, description=description)
+
 @app.route('/delete-item', methods=["GET", "DELETE"])
 def delete_item():
-    db.session.delete(db.session.execute(db.select(Selection).where(Selection.id == request.args.get("item_id"))).scalar())
+    db.session.delete(db.session.execute(db.select(Selection).where(Selection.id == int(request.args.get("item_id")))).scalar())
     db.session.commit()
     return redirect(url_for('checkout'))
 
@@ -251,6 +269,10 @@ def add():
         f.save(path) 
         return redirect(url_for('home'))
     return render_template('add.html', form=form)
+
+@app.route('/about')
+def about():
+    return render_template('contact.html')
 
 @app.route('/find', methods=["GET", "POST"])
 def find():

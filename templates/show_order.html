@@ -14,7 +14,7 @@
                 {{each.product.name}}
               </div>
               <div class="product-price">
-                ${{each.product.price}}
+                {{each.product.price}}
               </div>
               <div class="product-quantity">
                 <span>
@@ -33,17 +33,17 @@
 
         <div class="payment-summary-row">
           <div><i class="bi bi-cart3 me-2"></i>Items:</div>
-          <div class="payment-summary-money">${{order.user.total_price}}</div>
+          <div class="payment-summary-money">{{order.user.total_price}}</div>
         </div>
 
         <div class="payment-summary-row">
           <div><i class="bi bi-truck me-2"></i>Shipping &amp; handling:</div>
-          <div class="payment-summary-money">${{order.user.shipping}}</div>
+          <div class="payment-summary-money">{{order.user.shipping}}</div>
         </div>
 
         <div class="payment-summary-row total-row">
           <div><i class="bi bi-cash-stack me-2"></i>Order total:</div>
-          <div class="payment-summary-money">${{order.user.summary}}</div>
+          <div class="payment-summary-money">{{order.user.summary}}</div>
         </div>
         {% if order.confirmed != None: %}
         <div class="mt-4 p-3 bg-light rounded">

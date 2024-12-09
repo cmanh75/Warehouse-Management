@@ -1,49 +1,64 @@
 {% include 'header.html' %}
 <div class="container py-5">
   <div class="row align-items-center mb-5">
-    <div class="col-lg-6">
-      <h1 class="display-4 fw-bold">Welcome to Our Store</h1>
-      <p class="lead text-muted">Discover amazing products at great prices. Shop our wide selection of quality items.</p>
-      <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-        <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg px-4 me-md-2">Browse Products</a>
+    <div class="col-lg-6 animate__animated animate__fadeInLeft">
+      <h1 class="display-4 fw-bold text-gradient">Welcome to Our Store</h1>
+      <p class="lead text-muted animate__animated animate__fadeIn animate__delay-1s">Discover amazing products at great prices. Shop our wide selection of quality items.</p>
+      <div class="d-grid gap-2 d-md-flex justify-content-md-start animate__animated animate__fadeInUp animate__delay-1s">
+        <a href="{{ url_for('products') }}" class="btn btn-primary btn-lg px-4 me-md-2 btn-hover-effect">
+          <i class="bi bi-shop me-2"></i>Browse Products
+        </a>
         {% if not current_user.is_authenticated %}
-        <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg px-4">Sign Up</a>
+        <a href="{{ url_for('register') }}" class="btn btn-outline-secondary btn-lg px-4 btn-hover-effect">
+          <i class="bi bi-person-plus me-2"></i>Sign Up
+        </a>
         {% endif %}
       </div>
     </div>
-    <div class="col-lg-6">
-      <img src="{{ url_for('static', filename='assets/img/paper-art-shopping-online-on-smartphone-and-new-buy-sale-promotion-pink-backgroud-for-banner-market-ecommerce-free-vector.jpg') }}" class="img-fluid rounded shadow" alt="Store banner">
+    <div class="col-lg-6 animate__animated animate__fadeInRight">
+      <div class="position-relative">
+        <img src="{{ url_for('static', filename='assets/img/paper-art-shopping-online-on-smartphone-and-new-buy-sale-promotion-pink-backgroud-for-banner-market-ecommerce-free-vector.jpg') }}" 
+             class="img-fluid rounded shadow-lg hover-scale transition-all" alt="Store banner">
+        <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-overlay rounded"></div>
+      </div>
     </div>
   </div>
 
   <div class="row g-4 py-5">
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <i class="bi bi-truck fs-1 text-primary mb-3"></i>
-          <h5 class="card-title">Fast Delivery</h5>
-          <p class="card-text">Get your orders delivered quickly and safely to your doorstep.</p>
+    <div class="col-md-4 animate__animated animate__fadeInUp animate__delay-1s">
+      <div class="card h-100 shadow-sm hover-shadow transition-all">
+        <div class="card-body text-center">
+          <div class="feature-icon-wrapper mb-3">
+            <i class="bi bi-truck fs-1 text-primary"></i>
+          </div>
+          <h5 class="card-title fw-bold">Fast Delivery</h5>
+          <p class="card-text text-muted">Get your orders delivered quickly and safely to your doorstep.</p>
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <i class="bi bi-shield-check fs-1 text-primary mb-3"></i>
-          <h5 class="card-title">Secure Shopping</h5>
-          <p class="card-text">Shop with confidence knowing your transactions are safe and secure.</p>
+    <div class="col-md-4 animate__animated animate__fadeInUp animate__delay-2s">
+      <div class="card h-100 shadow-sm hover-shadow transition-all">
+        <div class="card-body text-center">
+          <div class="feature-icon-wrapper mb-3">
+            <i class="bi bi-shield-check fs-1 text-primary"></i>
+          </div>
+          <h5 class="card-title fw-bold">Secure Shopping</h5>
+          <p class="card-text text-muted">Shop with confidence knowing your transactions are safe and secure.</p>
         </div>
       </div>
     </div>
-    <div class="col-md-4">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <i class="bi bi-star fs-1 text-primary mb-3"></i>
-          <h5 class="card-title">Quality Products</h5>
-          <p class="card-text">We offer only the best quality products for our valued customers.</p>
+    <div class="col-md-4 animate__animated animate__fadeInUp animate__delay-3s">
+      <div class="card h-100 shadow-sm hover-shadow transition-all">
+        <div class="card-body text-center">
+          <div class="feature-icon-wrapper mb-3">
+            <i class="bi bi-star fs-1 text-primary"></i>
+          </div>
+          <h5 class="card-title fw-bold">Quality Products</h5>
+          <p class="card-text text-muted">We offer only the best quality products for our valued customers.</p>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 {% include 'footer.html' %}
