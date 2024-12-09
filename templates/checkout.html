@@ -29,13 +29,13 @@
     {% endfor %}
   </div>
   <div class="delivery-options">
+    {% if not filled: %}
     <div class="delivery-options-title">
       Choose a delivery option:
     </div>
-    {% if not filled: %}
     {{render_form(order_form)}}
-    {% endif %}
     </div>
+    {% endif %}
   </div>
   {% if filled: %}
   <div class="payment-summary js-payment-summary">

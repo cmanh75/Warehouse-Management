@@ -1,25 +1,39 @@
 <div class="container mt-5 mb-5">
   <footer class="py-5 my-5 bg-light rounded shadow-sm">
-    <ul class="nav justify-content-center border-bottom pb-4 mb-4">
-      <li class="nav-item"><a href="{{ url_for('home') }}" class="nav-link px-3 text-primary hover-shadow transition-all">Home</a></li>
-      <li class="nav-item"><a href="{{ url_for('products') }}" class="nav-link px-3 text-primary hover-shadow transition-all">Products</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-3 text-primary hover-shadow transition-all">Services</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-3 text-primary hover-shadow transition-all">Contact</a></li>
-      <li class="nav-item"><a href="#" class="nav-link px-3 text-primary hover-shadow transition-all">About</a></li>
-    </ul>
-    <div class="text-center">
-      <div class="mb-4">
-        <a href="#" class="text-decoration-none mx-3">
-          <i class="bi bi-facebook fs-4 text-primary"></i>
-        </a>
-        <a href="#" class="text-decoration-none mx-3">
-          <i class="bi bi-twitter fs-4 text-primary"></i>
-        </a>
-        <a href="#" class="text-decoration-none mx-3">
-          <i class="bi bi-instagram fs-4 text-primary"></i>
-        </a>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <h5 class="mb-3 text-primary"><i class="bi bi-shop me-2"></i>HUST Store</h5>
+        <p class="text-muted">Your trusted destination for quality products and exceptional service. Shop with confidence.</p>
       </div>
-      <p class="text-muted mb-0">© 2024 E-Commerce Store. All rights reserved.</p>
+      <div class="col-lg-4">
+        <h5 class="mb-3 text-primary">Quick Links</h5>
+        <ul class="nav flex-column">
+          <li class="nav-item"><a href="{{ url_for('home') }}" class="nav-link px-0 text-muted hover-shadow transition-all"><i class="bi bi-chevron-right me-2"></i>Home</a></li>
+          <li class="nav-item"><a href="{{ url_for('products') }}" class="nav-link px-0 text-muted hover-shadow transition-all"><i class="bi bi-chevron-right me-2"></i>Products</a></li>
+          <li class="nav-item"><a href="#" class="nav-link px-0 text-muted hover-shadow transition-all"><i class="bi bi-chevron-right me-2"></i>Services</a></li>
+          <li class="nav-item"><a href="{{ url_for('about') }}" class="nav-link px-0 text-muted hover-shadow transition-all"><i class="bi bi-chevron-right me-2"></i>Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <h5 class="mb-3 text-primary">Connect With Us</h5>
+        <div class="d-flex gap-3 mb-4">
+          <a href="#" class="btn btn-light rounded-circle shadow-sm hover-shadow transition-all">
+            <i class="bi bi-facebook text-primary"></i>
+          </a>
+          <a href="#" class="btn btn-light rounded-circle shadow-sm hover-shadow transition-all">
+            <i class="bi bi-twitter text-primary"></i>
+          </a>
+          <a href="#" class="btn btn-light rounded-circle shadow-sm hover-shadow transition-all">
+            <i class="bi bi-instagram text-primary"></i>
+          </a>
+        </div>
+        <p class="text-muted mb-0"><i class="bi bi-envelope me-2"></i>huststore@gmail.com</p>
+        <p class="text-muted mb-0"><i class="bi bi-telephone me-2"></i>+84 123 456 789</p>
+      </div>
+    </div>
+    <hr class="my-4">
+    <div class="text-center">
+      <p class="text-muted mb-0">© 2024 HUST Store. All rights reserved.</p>
     </div>
   </footer>
 </div>

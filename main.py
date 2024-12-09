@@ -13,6 +13,9 @@ from datetime import datetime as dt, timedelta
 from dotenv import load_dotenv
 import locale
 import os
+import pandas as pd
+import matplotlib.pyplot as plt
+
 load_dotenv()
 
 class Base(DeclarativeBase):
@@ -101,6 +104,9 @@ def add_to_cart():
     return redirect(url_for('checkout'))
 
 def currency_format(x):
+    if x < 0:
+        x = -x
+        return "-" +locale.currency(x, grouping=True)[:-3].strip('$') + "₫"
     return locale.currency(x, grouping=True)[:-3].strip('$') + "₫"
 
 @app.route('/show_order', methods=["PUT", "PATCH", "GET", "POST"])
@@ -113,12 +119,43 @@ def show_order():
         order.feedback = form.feedback.data
         order.confirmed = False
         if form.accept.data:
+            df = pd.read_csv("static/assets/revenue.csv")
+            for each in order.selections:
+                each.product.number -= each.quantity
+            print(df.columns)
+            revenue = df.tail(1)['REVENUE'].values[0]
+            revenue += int(order.selections[0].user.summary.strip("₫").replace(",", ""))
+            new_row = pd.DataFrame({
+                'TIME': [dt.now().strftime("%Y-%m-%d %H:%M")],
+                'REVENUE': [revenue]
+            })
+            df = pd.concat([df, new_row], ignore_index=True)
+            df.to_csv("static/assets/revenue.csv", index=False)
             order.confirmed = True
         db.session.commit()
     return render_template("show_order.html", order=order, form=form)
 
+@app.route('/statistic')
+def statistic():
+    df = pd.read_csv("static/assets/revenue.csv")
+    df = df.iloc[::-1]
+    for index, row in df.iterrows():
+        df.at[index, 'REVENUE'] = currency_format(row['REVENUE'])
+    return render_template("statistic.html", df=df)
+
 @app.route('/')
 def home():
+    df = pd.read_csv("static/assets/products.csv")
+    # for (index, data_row) in df.iterrows():
+    #     new_product = Product(
+    #         id=data_row["ID"],
+    #         name=data_row["NAME"],
+    #         number=data_row["NUMBER"],
+    #         price=currency_format((data_row["PRICE"]) * 10000),
+    #         img_path=f'static\\assets\\img\\{data_row["IMG_PATH"]}'
+    #     )
+    #     db.session.add(new_product)
+    #     db.session.commit()
     return render_template('index.html')
 
 @app.route('/manage')
@@ -129,7 +166,7 @@ def manage():
 @app.route('/history', methods=["POST", "GET"])
 def history():
     list = db.session.execute(db.select(Order).where(Order.user_id == current_user.id)).scalars().all()
-    return render_template('manage.html', list=list)
+    return render_template('history.html', list=list)
 
 @app.route('/checkout', methods=["POST", "GET", "PATCH", "PUT"])
 def checkout():
@@ -177,6 +214,16 @@ def checkout():
 @app.route('/imported', methods=["GET", "POST", "PATCH"])
 def imported():
     product_id = request.args.get("product_id")
+    total = request.args.get("total")
+    df = pd.read_csv("static/assets/revenue.csv")
+    revenue = df.tail(1)['REVENUE'].values[0]
+    revenue -= int(total.strip('₫').replace(",", "")) * 0.9
+    new_row = pd.DataFrame({
+        'TIME': [dt.now().strftime("%Y-%m-%d %H:%M")],
+        'REVENUE': [revenue]
+    })
+    df = pd.concat([df, new_row], ignore_index=True)
+    df.to_csv("static/assets/revenue.csv", index=False)
     product = db.session.execute(db.select(Product).where(Product.id == product_id)).scalar()
     product.number += int(request.args.get("quantity"))
     db.session.commit()
@@ -194,7 +241,7 @@ def import_pd():
     if request.method == "POST":
         description = form.description.data
         quantity = int(form.quantity.data)
-        total = int(product.price.strip("₫").replace(",", "")) * int(form.quantity.data)
+        total = int(product.price.strip("₫").replace(",", "")) * int(form.quantity.data) * 0.9
         confirmed = True
     return render_template('import.html', product=product, form=form, confirmed=confirmed, total=currency_format(total), quantity=quantity, description=description)
 
@@ -281,7 +328,7 @@ def find():
         list = db.session.execute(db.select(Product)).scalars().all()
         new_list = []
         for each in list:
-            if name in each.name:
+            if name.lower() in each.name.lower():
                 print(each.name)
                 new_list.append(each)
         return render_template('products.html', list=new_list)

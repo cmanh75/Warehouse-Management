@@ -23,6 +23,7 @@
           <li><a href="{{url_for('products')}}" class="nav-link px-2 text-white hover-opacity transition-all">Products</a></li>
           {% if current_user.is_authenticated and current_user.id == 1: %}
           <li><a href="{{url_for('manage')}}" class="nav-link px-2 text-white hover-opacity transition-all">Manage</a></li>
+          <li><a href="{{url_for('statistic')}}" class="nav-link px-2 text-white hover-opacity transition-all">Statistic</a></li>
           {% endif %}
           {% if current_user.is_authenticated and current_user.id != 1: %}
           <li><a href="{{url_for('checkout')}}" class="nav-link px-2 text-white hover-opacity transition-all">Orders</a></li>

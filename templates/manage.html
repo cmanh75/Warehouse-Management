@@ -1,49 +1,71 @@
 {% include 'header.html' %}
 <div class="container py-5">
   <div class="text-center mb-5">
-    <h1 class="display-4 fw-bold text-primary">Order Management</h1>
-    <p class="lead text-muted">View and manage all customer orders</p>
+    <h1 class="display-4 fw-bold text-primary">Admin Dashboard</h1>
+    <p class="lead text-muted">Manage Orders and Products</p>
   </div>
 
   <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="list-group shadow-sm">
-        {% for each in list:%}
-        <a href="{{url_for('show_order', order_id=each.id)}}" class="list-group-item list-group-item-action d-flex gap-3 py-4 position-relative hover-shadow transition-all" aria-current="true">
-          <div class="d-flex align-items-center justify-content-center bg-primary rounded-circle flex-shrink-0" style="width: 48px; height: 48px;">
-            <span class="text-white fw-bold">{{each.user.name[0]}}</span>
+    <div class="col-lg-10">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i>Customer Orders</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="list-group list-group-flush">
+            {% for each in list %}
+            <a href="{{url_for('show_order', order_id=each.id)}}" class="list-group-item list-group-item-action p-4 position-relative hover-shadow transition-all">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <div class="d-flex align-items-center justify-content-center bg-primary rounded-circle" style="width: 48px; height: 48px;">
+                    <span class="text-white fw-bold">{{each.user.name[0]}}</span>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h5 class="mb-1 text-primary">Order #{{each.id}}</h5>
+                      <p class="mb-1"><i class="bi bi-person me-2"></i>Customer: {{each.user.name}}</p>
+                      <p class="mb-1"><i class="bi bi-geo-alt me-2"></i>Shipping Address: {{each.user.address}}</p>
+                      <p class="mb-1"><i class="bi bi-calendar-event me-2"></i>Order Date: {{each.order_date}}</p>
+                      <p class="mb-0"><i class="bi bi-truck me-2"></i>Expected Delivery: {{each.user.delivery_date}}</p>
+                    </div>
+                    <div class="text-end">
+                      {% if each.confirmed == None %}
+                      <span class="badge bg-warning px-3 py-2">
+                        <i class="bi bi-hourglass-split me-1"></i>Pending Review
+                      </span>
+                      {% endif %}
+                      {% if each.confirmed != None and each.confirmed == True %}
+                      <span class="badge bg-success px-3 py-2">
+                        <i class="bi bi-check-circle me-1"></i>Order Confirmed
+                      </span>
+                      {% endif %}
+                      {% if each.confirmed != None and each.confirmed == False %}
+                      <span class="badge bg-danger px-3 py-2">
+                        <i class="bi bi-x-circle me-1"></i>Order Rejected
+                      </span>
+                      {% endif %}
+                      <div class="mt-2">
+                        <span class="text-muted small">Click to manage order</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+            {% endfor %}
           </div>
-          
-          <div class="d-flex gap-2 w-100 justify-content-between">
-            <div>
-              <h5 class="mb-1 text-primary">Order #{{each.id}}</h5>
-              <p class="mb-1"><i class="bi bi-person me-2"></i>{{each.user.name}}</p>
-              <p class="mb-1"><i class="bi bi-geo-alt me-2"></i>{{each.user.address}}</p>
-              <p class="mb-1"><i class="bi bi-calendar-event me-2"></i>Ordered: {{each.order_date}}</p>
-              <p class="mb-0"><i class="bi bi-truck me-2"></i>Delivery: {{each.user.delivery_date}}</p>
-            </div>
-
-            <div class="text-end">
-              {% if each.confirmed == None: %}
-              <span class="badge bg-warning px-3 py-2 rounded-pill">
-                <i class="bi bi-hourglass me-1"></i>Pending
-              </span>
-              {% endif %}
-              {% if each.confirmed != None and each.confirmed == True: %}
-              <span class="badge bg-success px-3 py-2 rounded-pill">
-                <i class="bi bi-check-circle me-1"></i>Confirmed
-              </span>
-              {% endif %}
-              {% if each.confirmed != None and each.confirmed == False: %}
-              <span class="badge bg-danger px-3 py-2 rounded-pill">
-                <i class="bi bi-x-circle me-1"></i>Rejected
-              </span>
-              {% endif %}
-            </div>
-          </div>
-        </a>
-        {% endfor %}
+        </div>
       </div>
+
+      {% if not list %}
+      <div class="text-center py-5">
+        <i class="bi bi-inbox fs-1 text-muted mb-3"></i>
+        <h4 class="text-muted">No Orders Yet</h4>
+        <p class="text-muted">There are currently no customer orders to manage.</p>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
