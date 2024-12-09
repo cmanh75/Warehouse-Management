@@ -1,59 +1,69 @@
 {% include 'header.html' %}
 {% from "bootstrap5/form.html" import render_form %}
-<div class="checkout-grid">
-  <div class="order-summary js-order-summary">
-    {% for each in order.selections: %}
-    <div class="cart-item-container js-cart-item-container-58b4fc92-e98c-42aa-8c55-b6b79996769a">
-      <div class="cart-item-details-grid">
-        <img class="product-image" src="{{each.product.img_path}}">
-        <div class="cart-item-details">
-          <div class="product-name">
-            {{each.product.name}}
-          </div>
-          <div class="product-price">
-            {{each.product.price}}
-          </div>
-          <div class="product-quantity">
-            <span>
-              Quantity: <span class="quantity-label">{{each.quantity}}</span>
-            </span>
+<div class="main">
+  <div class="container">
+    <h2 class="text-center mb-4">Order Details</h2>
+    <div class="checkout-grid">
+      <div class="order-summary js-order-summary">
+        {% for each in order.selections: %}
+        <div class="cart-item-container js-cart-item-container-58b4fc92-e98c-42aa-8c55-b6b79996769a">
+          <div class="cart-item-details-grid">
+            <img class="product-image" src="{{each.product.img_path}}">
+            <div class="cart-item-details">
+              <div class="product-name">
+                {{each.product.name}}
+              </div>
+              <div class="product-price">
+                ${{each.product.price}}
+              </div>
+              <div class="product-quantity">
+                <span>
+                  <i class="bi bi-box me-2"></i>Quantity: <span class="quantity-label">{{each.quantity}}</span>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
+        {% endfor %}
+      </div>
+      <div class="payment-summary js-payment-summary shadow">
+        <div class="payment-summary-title">
+          <i class="bi bi-receipt me-2"></i>Order Summary
+        </div>
+
+        <div class="payment-summary-row">
+          <div><i class="bi bi-cart3 me-2"></i>Items:</div>
+          <div class="payment-summary-money">${{order.user.total_price}}</div>
+        </div>
+
+        <div class="payment-summary-row">
+          <div><i class="bi bi-truck me-2"></i>Shipping &amp; handling:</div>
+          <div class="payment-summary-money">${{order.user.shipping}}</div>
+        </div>
+
+        <div class="payment-summary-row total-row">
+          <div><i class="bi bi-cash-stack me-2"></i>Order total:</div>
+          <div class="payment-summary-money">${{order.user.summary}}</div>
+        </div>
+        {% if order.confirmed != None: %}
+        <div class="mt-4 p-3 bg-light rounded">
+          <h4 class="mb-3"><i class="bi bi-chat-square-text me-2"></i>Feedback:</h4>
+          <p class="mb-0">{{order.feedback}}</p>
+        </div>
+        {% else: %}
+        {% if current_user.is_authenticated and current_user.id == 1: %}
+        <div class="mt-4">
+          {{render_form(form)}}
+        </div>
+        {% else: %}
+        <div class="alert alert-info mt-4">
+          <i class="bi bi-hourglass-split me-2"></i>
+          <h4 class="mb-0">Please wait for approval</h4>
+        </div>
+        {% endif %}
+        {% endif %}
       </div>
     </div>
-    {% endfor %}
-  </div>
-  <div class="payment-summary js-payment-summary">
-    <div class="payment-summary-title">
-      Order Summary
-    </div>
-
-    <div class="payment-summary-row">
-      <div>Items:</div>
-      <div class="payment-summary-money">{{order.user.total_price}}</div>
-    </div>
-
-    <div class="payment-summary-row">
-      <div>Shipping &amp; handling:</div>
-      <div class="payment-summary-money">{{order.user.shipping}}</div>
-    </div>
-
-    <div class="payment-summary-row total-row">
-      <div>Order total:</div>
-      <div class="payment-summary-money">{{order.user.summary}}</div>
-    </div>
-    {% if order.confirmed != None: %}
-    <div>
-      <h1>Feedback: </h1>
-      <p> {{order.feedback}} </p>
-    </div>
-    {% else: %}
-    {% if current_user.is_authenticated and current_user.id == 1: %}
-    {{render_form(form)}}
-    {% else: %}
-    <h3 class="mt-5">Please wait for approval</h3>
-    {% endif %}
-    {% endif %}
   </div>
 </div>
 {% include 'footer.html' %}

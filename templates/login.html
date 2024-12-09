@@ -1,24 +1,43 @@
 {% from "bootstrap5/form.html" import render_form %}
 {% include 'header.html'%}
-<main class="mb-4">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-8 col-md-10 mx-auto">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          <ul class=flashes>
-            {% for message in messages %}
-              <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header bg-primary text-white text-center py-4">
+          <h3 class="mb-0">Login</h3>
+        </div>
+        <div class="card-body p-4">
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <div class="alert alert-danger">
+                <ul class="mb-0">
+                  {% for message in messages %}
+                    <li>{{ message }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+          {% endwith %}
+          
+          {% if valid %}
+            <div class="alert alert-danger">
+              <i class="bi bi-exclamation-circle me-2"></i>
+              Incorrect Email or Password!
+            </div>
           {% endif %}
-        {% endwith %}
-        {% if valid: %}
-          <p class="flash">Incorrect Email or Password!</p>  
-        {% endif %}
-        {{render_form(form)}}
+
+          <div class="login-form">
+            {{render_form(form, button_map={'submit': 'primary'})}}
+          </div>
+        </div>
+        <div class="card-footer text-center py-3">
+          <div class="small">
+            <a href="{{ url_for('register') }}" class="text-decoration-none">Need an account? Sign up!</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</main>
+</div>
 {% include 'footer.html'%}

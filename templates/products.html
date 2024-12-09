@@ -1,13 +1,14 @@
 {% include 'header.html' %}
 <div class="px-5 pt-5 my-5 text-center border-bottom">
-  <h1 class="display-4 fw-bold text-body-emphasis"> Item List </h1>
+  <h1 class="display-4 fw-bold text-body-emphasis">Our Products</h1>
+  <p class="lead mb-4">Browse our carefully curated selection of high-quality products</p>
 </div>
 <div class="row mb-5">
   <div class="col">
   </div>
   <div class="col col-5 col">
     <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="post" action="{{url_for('find')}}">
-      <input type="text" id="name" name="name" class="form-control form-control-dark text-light" placeholder="Search..."
+      <input type="text" id="name" name="name" class="form-control form-control-dark" placeholder="Search products..." 
         aria-label="Search">
     </form>
   </div>
@@ -15,37 +16,45 @@
   </div>
 </div>
 <div class="container">
-  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
     {% for each in list: %}
     <div class="col">
-      <div class="card shadow-sm">
-        <img class="card-img-top"
-          data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail"
-          alt="Thumbnail [100%x225]" style="height: 350px; width: 100%; display: block;" src="{{each.img_path}}"
-          data-holder-rendered="true">
-        <div class="card-body">
-          <h1 class="card-text">{{each.name}}</h1>
-          <h3>{{each.price}}</h3>
-          <form method="post" action="{{url_for('add_to_cart')}}">
-            <select id="quantity" name="quantity" class="form-select mb-2 w-50" aria-label="Default select example">
+      <div class="card h-100 shadow-sm hover-shadow transition-all">
+        <div class="position-relative">
+          <img class="card-img-top"
+            alt="{{each.name}}" style="height: 350px; width: 100%; object-fit: cover;" src="{{each.img_path}}">
+          {% if each.number < 5 and each.number > 0 %}
+          <span class="position-absolute top-0 end-0 badge bg-warning m-2">Low Stock</span>
+          {% endif %}
+          {% if each.number == 0 %}
+          <span class="position-absolute top-0 end-0 badge bg-danger m-2">Out of Stock</span>
+          {% endif %}
+        </div>
+        <div class="card-body d-flex flex-column">
+          <h2 class="card-title h4 mb-3">{{each.name}}</h2>
+          <h3 class="text-primary mb-3">{{each.price}}</h3>
+          <form method="post" action="{{url_for('add_to_cart')}}" class="mb-3">
+            <select id="quantity" name="quantity" class="form-select mb-2 w-50" aria-label="Select quantity">
               {% for i in range(1, each.number + 1): %}
-              <option value="{{i}}"> {{i}} </option>
+              <option value="{{i}}">{{i}} unit{% if i > 1 %}s{% endif %}</option>
               {% endfor %}
             </select>
           </form>
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="btn-group">
-              {% if current_user.is_authenticated and current_user.id != 1: %}
-              <form method="post" action="{{url_for('add_to_cart', product_id=each.id)}}">
-                <button type="submit" class="btn btn-sm btn-outline-secondary">Add to cart</button>
-              </form>
-              {% endif %}
-              {% if current_user.is_authenticated and current_user.id == 1: %}
-              <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{{url_for('edit', product_id=each.id)}}"> Edit </a></button>
-              <button type="button" class="btn btn-sm btn-outline-secondary"><a href="{{url_for('delete', product_id=each.id)}}"> Delete </a></button>
-              {% endif %}
+          <div class="mt-auto">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                {% if current_user.is_authenticated and current_user.id != 1: %}
+                <form method="post" action="{{url_for('add_to_cart', product_id=each.id)}}">
+                  <button type="submit" class="btn btn-primary">Add to Cart</button>
+                </form>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.id == 1: %}
+                <a href="{{url_for('edit', product_id=each.id)}}" class="btn btn-outline-secondary me-2">Edit</a>
+                <a href="{{url_for('delete', product_id=each.id)}}" class="btn btn-outline-danger">Delete</a>
+                {% endif %}
+              </div>
+              <small class="text-muted">Stock: {{each.number}}</small>
             </div>
-            <small class="text-body-secondary">Number in stock: {{each.number}}</small>
           </div>
         </div>
       </div>
@@ -53,8 +62,10 @@
     {% endfor %}
   </div>
   {% if current_user.is_authenticated and current_user.id == 1: %}
-  <div class="d-flex justify-content-end mt-5">
-    <a class="btn btn-primary float-right" href="{{url_for('add')}}">Create New Product</a>
+  <div class="d-flex justify-content-end mt-5 mb-5">
+    <a class="btn btn-primary" href="{{url_for('add')}}">
+      <i class="bi bi-plus-circle me-2"></i>Add New Product
+    </a>
   </div>
   {% endif %}
 </div>

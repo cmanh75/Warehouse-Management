@@ -80,12 +80,11 @@ with app.app_context():
 @app.route('/add_to_cart', methods=["POST", "PATCH", "GET"])
 def add_to_cart():
     product_id = request.args.get("product_id")
-    print(product_id)
     product = db.session.execute(db.select(Product).where(Product.id == product_id)).scalar()
     check_exist = db.session.execute(db.select(Selection).where((Selection.product_id == product_id), (Selection.user_id == current_user.id))).scalar()
+    print(request.form.get('name'))
     if request.method == "POST":
         print(122)
-        print(request.form.get('name'))
     if check_exist:
         check_exist.quantity += 1
         db.session.commit()
@@ -256,7 +255,7 @@ def add():
 @app.route('/find', methods=["GET", "POST"])
 def find():
     if request.method == "POST":
-        name = request.form["name"]
+        name = request.form.get("name")
         list = db.session.execute(db.select(Product)).scalars().all()
         new_list = []
         for each in list:

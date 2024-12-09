@@ -14,12 +14,13 @@
             {{each.product.price}}
           </div>
           <div class="product-quantity">
-            <span>
-              Quantity: <span class="quantity-label">{{each.quantity}}</span>
-            </span>
-            <span class="delete-quantity-link link-primary js-delete-quantity-link"
-              data-id="58b4fc92-e98c-42aa-8c55-b6b79996769a">
-              <a href="{{url_for('delete_item', item_id=each.id)}}">Delete</a>
+            <span class="d-flex align-items-center">
+              <span class="me-3 fw-bold">Quantity: <span class="quantity-label text-primary">{{each.quantity}}</span></span>
+              <span class="delete-quantity-link">
+                <a href="{{url_for('delete_item', item_id=each.id)}}" class="btn btn-outline-danger btn-sm">
+                  <i class="bi bi-trash me-1"></i>Delete
+                </a>
+              </span>
             </span>
           </div>
         </div>

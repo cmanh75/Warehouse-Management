@@ -1,26 +1,40 @@
 {% include 'header.html' %}
-<div class="d-flex flex-column flex-md-row p-4 gap-4 py-md-5 align-items-center justify-content-center">
-  <div class="list-group">
-    {% for each in list:%}
-    <a href="{{url_for('show_order', order_id=each.id)}}" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-      <img src="https://github.com/twbs.png" alt="twbs" width="32" height="32" class="rounded-circle flex-shrink-0">
-      <div class="d-flex gap-2 w-100 justify-content-between">
-        <div>
-          <h6 class="mb-0">Order ID: {{each.id}}</h6>
-          <p class="mb-0 opacity-75">Customer: {{each.user.name}}</p>
-          <p class="mb-0 opacity-75">Address: {{each.user.address}}</p>
-          <p class="mb-0 opacity-75">Order Date: {{each.order_date}}</p>
-          <p class="mb-0 opacity-75">Delivery Date: {{each.user.delivery_date}}</p>
+<div class="main">
+  <div class="container">
+    <h2 class="text-center mb-4">Order History</h2>
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="list-group shadow">
+          {% for each in list:%}
+          <a href="{{url_for('show_order', order_id=each.id)}}" class="list-group-item list-group-item-action d-flex gap-3 py-4 position-relative hover-shadow transition-all" aria-current="true">
+            <div class="d-flex align-items-center justify-content-center bg-primary rounded-circle flex-shrink-0" style="width: 48px; height: 48px;">
+              <i class="bi bi-box-seam text-white fs-5"></i>
+            </div>
+            <div class="d-flex gap-2 w-100 justify-content-between">
+              <div>
+                <h5 class="mb-1 text-primary">Order #{{each.id}}</h5>
+                <p class="mb-1 text-muted"><i class="bi bi-person me-2"></i>{{each.user.name}}</p>
+                <p class="mb-1 text-muted"><i class="bi bi-geo-alt me-2"></i>{{each.user.address}}</p>
+                <p class="mb-1 text-muted"><i class="bi bi-calendar-event me-2"></i>Ordered: {{each.order_date}}</p>
+                <p class="mb-0 text-muted"><i class="bi bi-truck me-2"></i>Delivery: {{each.user.delivery_date}}</p>
+              </div>
+              {% if each.confirmed != None %}
+                {% if each.confirmed == True %}
+                <div class="badge bg-success position-absolute top-0 end-0 m-3">
+                  <i class="bi bi-check-circle me-1"></i>Confirmed
+                </div>
+                {% else %}
+                <div class="badge bg-danger position-absolute top-0 end-0 m-3">
+                  <i class="bi bi-x-circle me-1"></i>Declined
+                </div>
+                {% endif %}
+              {% endif %}
+            </div>
+          </a>
+          {% endfor %}
         </div>
-        {% if each.confirmed != None and each.confirmed == True: %}
-        <small class="opacity-50 text-nowrap">✅</small>
-        {% endif %}
-        {% if each.confirmed != None and each.confirmed == False: %}
-        <small class="opacity-50 text-nowrap">❌</small>
-        {% endif %}
       </div>
-    </a>
-    {% endfor %}
+    </div>
   </div>
 </div>
 {% include 'footer.html' %}
