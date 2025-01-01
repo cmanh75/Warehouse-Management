@@ -1,17 +1,17 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, FileField, SelectField, PasswordField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email
 from flask_ckeditor import CKEditorField
 from datetime import datetime as dt, timedelta
 
 class RegisterForm(FlaskForm):
-    email = StringField("Email", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
     password = StringField("Password", validators=[DataRequired()])
     name = StringField("Name", validators=[DataRequired()])
     submit = SubmitField("Sign Up")
 
 class LoginForm(FlaskForm):
-    email = StringField("Email", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Sign In")
 

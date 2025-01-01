@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, get
 from flask_sqlalchemy import SQLAlchemy
 from flask_ckeditor import CKEditor
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String, Boolean
+from sqlalchemy import Integer, String, Boolean, desc
 from form import RegisterForm, LoginForm, UploadForm, CheckoutForm, PlaceOrder, Confirm, ImportForm
 from flask_bootstrap import Bootstrap5
 from typing import List, Optional
@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 import locale
 import os
 import pandas as pd
+import smtplib
 import matplotlib.pyplot as plt
 
 load_dotenv()
@@ -30,6 +31,8 @@ db.init_app(app)
 locale.setlocale(locale.LC_ALL, '')
 login_manager = LoginManager()
 login_manager.init_app(app)
+MAIL_ADDRESS = os.environ["MAIL_ADDRESS"]
+MAIL_APP_PW = os.environ["MAIL_APP_PW"]
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, user_id)
@@ -160,12 +163,12 @@ def home():
 
 @app.route('/manage')
 def manage():
-    list = db.session.execute(db.select(Order)).scalars().all()
+    list = db.session.execute(db.select(Order).order_by(desc(Order.id))).scalars().all()
     return render_template('manage.html', list=list)
 
 @app.route('/history', methods=["POST", "GET"])
 def history():
-    list = db.session.execute(db.select(Order).where(Order.user_id == current_user.id)).scalars().all()
+    list = db.session.execute(db.select(Order).order_by(desc(Order.id)).where(Order.user_id == current_user.id)).scalars().all()
     return render_template('history.html', list=list)
 
 @app.route('/checkout', methods=["POST", "GET", "PATCH", "PUT"])
@@ -210,6 +213,13 @@ def checkout():
         db.session.commit()
         return redirect('history')
     return render_template('checkout.html', _list=list, filled=False, user=None, order_form=order_form, place_order=place_order)
+
+def send_email(name, email, message):
+    email_message = f"Subject:New Message\n\nName: {name}\nEmail: {email}\nMessage:{message}"
+    with smtplib.SMTP("smtp.gmail.com") as connection:
+        connection.starttls()
+        connection.login(MAIL_ADDRESS, MAIL_APP_PW)
+        connection.sendmail(MAIL_ADDRESS, MAIL_ADDRESS, email_message)
 
 @app.route('/imported', methods=["GET", "POST", "PATCH"])
 def imported():
@@ -317,8 +327,14 @@ def add():
         return redirect(url_for('home'))
     return render_template('add.html', form=form)
 
-@app.route('/about')
+@app.route('/about', methods=["POST", "GET"])
 def about():
+    if request.method == "POST":
+        email = request.form.get("email")
+        name = request.form.get("name")
+        print(email)
+        message = request.form.get("message")
+        send_email(name=name, email=email, message=message)
     return render_template('contact.html')
 
 @app.route('/find', methods=["GET", "POST"])
